@@ -72,11 +72,12 @@ public class MainActivity extends AppCompatActivity
 
         while (!mBluetoothAdapter.isEnabled())
         {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            //Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            //startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
         findPairs(mBluetoothAdapter);
+        deviceFoundTest();
     }
 
     public void refreshClick(View v)
@@ -134,6 +135,22 @@ public class MainActivity extends AppCompatActivity
 
         newButton.setLayoutParams(lp);
         newButton.setText(device.getName());
+
+        addButton tr = new addButton(newButton, R.id.weather_devices);
+        runOnUiThread(tr);
+    }
+
+    // adds a test device to test if no bluetooth devices are around
+    private void deviceFoundTest()
+    {
+
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+        Button newButton = new Button(getApplicationContext());
+        newButton.setOnClickListener(new WeatherModuleButtonListener(MainActivity.this,-1,"Test"));
+        newButton.setHeight(75);
+
+        newButton.setLayoutParams(lp);
+        newButton.setText("Test");
 
         addButton tr = new addButton(newButton, R.id.weather_devices);
         runOnUiThread(tr);

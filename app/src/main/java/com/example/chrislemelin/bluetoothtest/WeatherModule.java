@@ -12,26 +12,53 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.BufferedReader;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by chrislemelin on 11/2/16.
  */
 
-public class WeatherModule implements Serializable
+public class WeatherModule
 {
+    private String name;
+
+
     private BluetoothSocket sock = null;
 
-    private int id;
+
     private WeatherModuleActivity caller;
     private DataOutputStream out;
     private DataInputStream in;
 
+    private ArrayList<Integer> lastEightHours = new ArrayList<Integer>();
+    private ArrayList<Integer> lastSevenDays = new ArrayList<Integer>();
+
+    public static WeatherModule testModule;
+    static
+    {
+        testModule = new WeatherModule(null,"Test Name",null);
+        testModule.addToList1(0,5);
+        testModule.addToList1(1,2);
+        testModule.addToList1(2,8);
+        testModule.addToList1(3,1);
+        testModule.addToList1(4,4);
+        testModule.addToList1(5,3);
+        testModule.addToList1(6,14);
+        testModule.addToList1(7,9);
+
+    }
+
+
 
     public WeatherModule(BluetoothSocket sock, String name, WeatherModuleActivity caller)
     {
+        if(sock == null)
+        {
+            return;
+        }
         this.sock = sock;
-        this.id = id;
         this.caller = caller;
+        this.name = name;
 
         try
         {
@@ -44,13 +71,18 @@ public class WeatherModule implements Serializable
         {
 
         }
-
     }
+
+
 
 
     public void start()
     {
-        //BluetoothSocket sock = SocketHolder.getSocket(id);
+        if(sock == null)
+        {
+            return;
+        }
+
         try
         {
             out.writeUTF("switch");
@@ -63,6 +95,27 @@ public class WeatherModule implements Serializable
 
         }
 
+    }
+
+    public void setCaller(WeatherModuleActivity caller)
+    {
+        this.caller = caller;
+        caller.updateGraph1(lastEightHours);
+    }
+
+    private void addToList1(int index, int value)
+    {
+        lastEightHours.add(index,value);
+    }
+
+    private void addToList2(int index, int value)
+    {
+        lastEightHours.add(index,value);
+    }
+
+    private void updateView()
+    {
+        //caller.doStuff
     }
 
 
@@ -90,13 +143,25 @@ public class WeatherModule implements Serializable
 
                 }
             }
+        }
+    }
 
+    private class outThread extends Thread
+    {
+        final DataOutputStream out;
 
+        public outThread(DataOutputStream out)
+        {
+            this.out = out;
         }
 
+        public void run()
+        {
+            while(true)
+            {
 
-
-
+            }
+        }
 
     }
 
