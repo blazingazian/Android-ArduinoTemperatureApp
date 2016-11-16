@@ -100,7 +100,7 @@ public class WeatherModule
     public void setCaller(WeatherModuleActivity caller)
     {
         this.caller = caller;
-        caller.updateGraph1(lastEightHours);
+        caller.updateGraphData(lastEightHours);
     }
 
     private void addToList1(int index, int value)

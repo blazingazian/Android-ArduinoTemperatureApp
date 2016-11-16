@@ -26,16 +26,60 @@
             />
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="100dp"
             android:id="@+id/current_temp"
             android:text="TEST TEMP"/>
-
-        <com.jjoe64.graphview.GraphView
+        
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:id="@+id/graph"
-            />
+            android:layout_height="50dp">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/tap_shape_selected"
+                android:id="@+id/graphTab1"
+                android:onClick="selectGraph1"
+                android:layout_weight="1"/>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".1"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/tab_shape_not_selected"
+                android:onClick="selectGraph2"
+                android:id="@+id/graphTab2"
+                android:layout_weight="1"/>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".1"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/tab_shape_not_selected"
+                android:onClick="selectGraph3"
+                android:id="@+id/graphTab3"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+
+
+        <RelativeLayout
+            android:background="@color/colorPrimary"
+            android:id="@+id/weather_graph_frag"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+        </RelativeLayout>
+
+
 
     </LinearLayout>
 
