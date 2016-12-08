@@ -3,6 +3,7 @@ package com.example.chrislemelin.bluetoothtest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.app.Activity;
 
 /**
  * Created by chrislemelin on 11/4/16.
@@ -30,8 +31,6 @@ public class WeatherModuleButtonListener implements View.OnClickListener
         i.putExtras(b);
 
         main.startActivity(i);
-        main.finish();
-
     }
 
 }

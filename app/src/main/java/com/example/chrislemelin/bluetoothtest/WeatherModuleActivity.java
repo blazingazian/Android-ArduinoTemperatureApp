@@ -21,6 +21,8 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 
+import static android.R.attr.data;
+
 public class WeatherModuleActivity extends AppCompatActivity implements WeatherGraphFrag.LoadListener
 {
 
@@ -36,7 +38,7 @@ public class WeatherModuleActivity extends AppCompatActivity implements WeatherG
 
     private FragmentManager man;
 
-    int selected = 1;
+    int selected = 0;
 
 
     @Override
@@ -48,41 +50,23 @@ public class WeatherModuleActivity extends AppCompatActivity implements WeatherG
 
         Bundle b = getIntent().getExtras();
         int id = b.getInt(getString(R.string.module_key));
-        if(id == -1)
-        {
-            weatherList2.add(2);
-            weatherList2.add(5);
-            weatherList2.add(21);
-            weatherList2.add(3);
-            weatherList2.add(8);
-            weatherList2.add(15);
 
-            module = WeatherModule.testModule;
-            man = getSupportFragmentManager();
-
-            graphFrag1.updateData(weatherList1);
-            if (findViewById(R.id.weather_graph_frag) != null) {
-                man.beginTransaction()
-                        .replace(R.id.weather_graph_frag, graphFrag1).commit();
-            }
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run()
-                {
-                    module.setCaller(WeatherModuleActivity.this);
-                }
-            }, 1000);
-            return;
-        }
-
+        man = getSupportFragmentManager();
         String name = b.getString(getString(R.string.module_name));
         ((TextView)findViewById(R.id.module_name)).setText(name);
+
+        if(id == -1)
+        {
+
+            module = WeatherModule.testModule;
+            selectGraph1(findViewById(R.id.graphTab1));
+            module.setCaller(WeatherModuleActivity.this);
+            return;
+        }
 
         module = new WeatherModule(SocketHolder.getSocket(id),name,WeatherModuleActivity.this);
         module.start();
 
-        man = getSupportFragmentManager();
         if (findViewById(R.id.weather_graph_frag) != null)
         {
             Log.d("frags", "making frag");
@@ -90,14 +74,13 @@ public class WeatherModuleActivity extends AppCompatActivity implements WeatherG
                     .add(R.id.weather_graph_frag, graphFrag1).commit();
         }
         man.beginTransaction();
-
     }
 
     public void selectGraph1(View v)
     {
-        Log.d("selected first graph called","popo");
         clearTabSelects();
         v.setBackground(getDrawable(R.drawable.tap_shape_selected));
+
         graphFrag1.updateData(weatherList1);
         if(selected != 1)
         {
@@ -140,14 +123,18 @@ public class WeatherModuleActivity extends AppCompatActivity implements WeatherG
 
 
 
-    public void updateGraphData(final ArrayList<Integer> temps)
+    public void updateGraphData(final ArrayList<Integer> temps, int id)
     {
-        Log.d("updateData","done "+selected);
         weatherList1 = temps;
-        if(selected == 1)
-        {
-            updateGraph(temps);
+        if(id == 1) {
+            if (selected == 1) {
+                TextView temp = (TextView)findViewById(R.id.current_temp);
+                if(temp != null)
+                    temp.setText(temps.get(temps.size()-1).toString());
+                graphFrag1.updateData(temps);
+            }
         }
+
     }
 
     public void LoadedGraph(ArrayList<Integer> data)
@@ -157,8 +144,6 @@ public class WeatherModuleActivity extends AppCompatActivity implements WeatherG
 
     private void updateGraph(final ArrayList<Integer> temps)
     {
-        Log.d("updateGraph","done");
-
         DataPoint[] points = new DataPoint[temps.size()];
         for(int a = 0; a < temps.size(); a++)
         {
@@ -166,6 +151,7 @@ public class WeatherModuleActivity extends AppCompatActivity implements WeatherG
         }
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
+        graph.removeAllSeries();
         GridLabelRenderer glr = graph.getGridLabelRenderer();
         glr.setPadding(32);
 
@@ -196,6 +182,7 @@ public class WeatherModuleActivity extends AppCompatActivity implements WeatherG
                 }
             }
         });
+
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(points);
         graph.addSeries(series);
     }
@@ -207,5 +194,9 @@ public class WeatherModuleActivity extends AppCompatActivity implements WeatherG
         findViewById(R.id.graphTab3).setBackground(getDrawable(R.drawable.tab_shape_not_selected));
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 
 }

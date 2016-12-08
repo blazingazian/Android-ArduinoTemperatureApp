@@ -13,6 +13,7 @@ import java.io.PrintStream;
 import java.io.BufferedReader;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by chrislemelin on 11/2/16.
@@ -31,20 +32,26 @@ public class WeatherModule
     private DataInputStream in;
 
     private ArrayList<Integer> lastEightHours = new ArrayList<Integer>();
+    private final int LASTEIGHTHOURSLENGTH = 8;
     private ArrayList<Integer> lastSevenDays = new ArrayList<Integer>();
+    private final int LASTSEVENDAYSLENGTH = 7;
+
 
     public static WeatherModule testModule;
     static
     {
         testModule = new WeatherModule(null,"Test Name",null);
-        testModule.addToList1(0,5);
-        testModule.addToList1(1,2);
-        testModule.addToList1(2,8);
-        testModule.addToList1(3,1);
-        testModule.addToList1(4,4);
-        testModule.addToList1(5,3);
-        testModule.addToList1(6,14);
-        testModule.addToList1(7,9);
+        testModule.insertToList1(0,5);
+        testModule.insertToList1(1,2);
+        testModule.insertToList1(2,8);
+        testModule.insertToList1(3,1);
+        testModule.insertToList1(4,4);
+        testModule.insertToList1(5,3);
+        testModule.insertToList1(6,14);
+        testModule.insertToList1(7,9);
+        Thread tr = new inThreadTest(testModule);
+        tr.start();
+
 
     }
 
@@ -100,22 +107,47 @@ public class WeatherModule
     public void setCaller(WeatherModuleActivity caller)
     {
         this.caller = caller;
-        caller.updateGraphData(lastEightHours);
+        caller.updateGraphData(lastEightHours,1);
     }
 
-    private void addToList1(int index, int value)
+
+    public void addToList(int value, int id)
+    {
+        Log.d("added to weather List",value+":"+id);
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        int length = 0;
+        if(id == 1)
+        {
+            list = lastEightHours;
+            length = LASTEIGHTHOURSLENGTH;
+        }
+        // add other 2 lists
+
+        if(list.size() == length)
+        {
+            list.remove(0);
+            list.add(value);
+        }
+        else
+        {
+            list.add(value);
+        }
+        updateView();
+    }
+
+    private void insertToList1(int index, int value)
     {
         lastEightHours.add(index,value);
     }
 
-    private void addToList2(int index, int value)
+    private void insertToList2(int index, int value)
     {
         lastEightHours.add(index,value);
     }
 
     private void updateView()
     {
-        //caller.doStuff
+        caller.updateGraphData(lastEightHours,1);
     }
 
 
@@ -165,5 +197,34 @@ public class WeatherModule
 
     }
 
+
+    static private class inThreadTest extends Thread
+    {
+        Random r = new Random();
+        WeatherModule mod;
+        public inThreadTest(WeatherModule mod)
+        {
+            this.mod = mod;
+        }
+
+        public void run()
+        {
+            int a = 40;
+            Log.d("start","thread");
+            while(true)
+            {
+                try {
+                    this.sleep(1000);
+                }
+                catch (Exception e)
+                {
+
+                }
+                mod.addToList(r.nextInt(100),1);
+
+
+            }
+        }
+    }
 }
 
